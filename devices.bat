@@ -1,0 +1,2 @@
+adb.exe devices
+pause

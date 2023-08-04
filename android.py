@@ -19,6 +19,40 @@ class ADBMaster():
             for device in devices:
                 print(f'Name: {device.get_properties()["ro.product.device"]} - Android {device.get_properties()["ro.build.version.release"]}')
 
+    def isConnected(self, targetDevice : Device = None):
+        if targetDevice is not None:
+            output = targetDevice.shell("ping -c 2 google.com")
+            if "icmp" in output or "bytes from" in output:
+                return True
+            else:
+                return False
+        else:
+            devices = self.client.devices()
+            if len(devices) > 0:
+                for device in devices:
+                    output = device.shell("ping -c 2 google.com")
+                    if "icmp" in output or "bytes from" in output:
+                        return True
+                    else:
+                        return False
+
+    def isAirPlane(self, targetDevice: Device = None):
+        if targetDevice is not None:
+            output = targetDevice.shell("settings get global airplane_mode_on")
+            if "0" in output:
+                return False
+            else:
+                return True
+        else:
+            devices = self.client.devices()
+            if len(devices) > 0:
+                for device in devices:
+                    output = device.shell("settings get global airplane_mode_on")
+                    if "0" in output:
+                        return False
+                    else:
+                        return True
+
     def toggleWifi(self, enable: bool, targetDevice : Device = None):
         command = "svc wifi enable" if enable else "svc wifi disable"
         if targetDevice is not None:
