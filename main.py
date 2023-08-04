@@ -20,14 +20,21 @@ class DeviceThread(threading.Thread):
             while True and loop == True:
                 if self.master.isConnected(self.device):
                     break
-            self.master.browse("https://3d-sof2.com", self.device)
-            time.sleep(6)
-            self.master.toggleAirPlane(self.device)
+            print("Going to browser")
+            self.master.browse("https://maharga.online", self.device)
+            time.sleep(5)
+            self.device.shell("input keyevent 4")
+            time.sleep(1)
+            print("Toggling Airplane mode on")
+            while True and loop == True:
+                if self.master.toggleAirPlane(self.device, True):
+                    break
             while True and loop == True:
                 if self.master.isAirPlane(self.device):
+                    print("Airplane ON")
                     break
-            self.master.toggleAirPlane(self.device)
-                
+            print("Toggling Airplane mode off")
+            self.master.toggleAirPlane(self.device, False)
 
 class App(tk.Tk):
     def __init__(self):

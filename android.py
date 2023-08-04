@@ -21,20 +21,11 @@ class ADBMaster():
 
     def isConnected(self, targetDevice : Device = None):
         if targetDevice is not None:
-            output = targetDevice.shell("ping -c 2 google.com")
-            if "icmp" in output or "bytes from" in output:
+            output = targetDevice.shell("ping -c 1 google.com")
+            if "bytes of data" in output:
                 return True
             else:
                 return False
-        else:
-            devices = self.client.devices()
-            if len(devices) > 0:
-                for device in devices:
-                    output = device.shell("ping -c 2 google.com")
-                    if "icmp" in output or "bytes from" in output:
-                        return True
-                    else:
-                        return False
 
     def isAirPlane(self, targetDevice: Device = None):
         if targetDevice is not None:
@@ -43,59 +34,34 @@ class ADBMaster():
                 return False
             else:
                 return True
-        else:
-            devices = self.client.devices()
-            if len(devices) > 0:
-                for device in devices:
-                    output = device.shell("settings get global airplane_mode_on")
-                    if "0" in output:
-                        return False
-                    else:
-                        return True
 
     def toggleWifi(self, enable: bool, targetDevice : Device = None):
         command = "svc wifi enable" if enable else "svc wifi disable"
         if targetDevice is not None:
             targetDevice.shell(command)
-        else:
-            devices = self.client.devices()
-            if len(devices) > 0:
-                for device in devices:
-                    device.shell(command)
 
     def toggleData(self, enable: bool, targetDevice : Device = None):
         command = "svc data enable" if enable else "svc data disable"
         if targetDevice is not None:
             targetDevice.shell(command)
-        else:
-            devices = self.client.devices()
-            if len(devices) > 0:
-                for device in devices:
-                    device.shell(command)
 
-    def toggleAirPlane(self, targetDevice : Device = None):
+    def toggleAirPlane(self, targetDevice : Device = None, enable : bool = False):
         if targetDevice is not None:
-            targetDevice.shell("am start -a android.settings.AIRPLANE_MODE_SETTINGS")
-            targetDevice.shell("input keyevent 20")
-            targetDevice.shell("input keyevent 23")
-            targetDevice.shell("input keyevent 4")
-        else:
-            devices = self.client.devices()
-            if len(devices) > 0:
-                for device in devices:
-                    device.shell("am start -a android.settings.AIRPLANE_MODE_SETTINGS")
-                    device.shell("input keyevent 20")
-                    device.shell("input keyevent 23")
-                    device.shell("input keyevent 4")
+            output = targetDevice.shell("am start -a android.settings.AIRPLANE_MODE_SETTINGS ; sleep 0.1")
+            if "Starting" in output:
+                if enable:
+                    targetDevice.shell("input keyevent 20 ; sleep 0.1")
+                    targetDevice.shell("input keyevent 20")
+                targetDevice.shell("input keyevent 23 ; sleep 0.1")
+                if not enable:
+                    targetDevice.shell("input keyevent 4")
+                return True
+            else:
+                return False
 
     def browse(self, link, targetDevice: Device = None):
         if targetDevice is not None:
             targetDevice.shell(f"am start -n com.android.chrome/com.google.android.apps.chrome.Main -d '{link}'")
-        else:
-            devices = self.client.devices()
-            if len(devices) > 0:
-                for device in devices:
-                    device.shell(f"am start -n com.android.chrome/com.google.android.apps.chrome.Main -d '{link}'")
     
     def shellcmd(self, cmd, targetDevice : Device = None):
         if targetDevice is not None:
