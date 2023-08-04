@@ -17,11 +17,17 @@ class DeviceThread(threading.Thread):
         self.master.toggleWifi(False, self.device)
         self.master.toggleData(True, self.device)
         while loop:
-            while(True and loop == True):
+            while True and loop == True:
                 if self.master.isConnected(self.device):
                     break
             self.master.browse("https://3d-sof2.com", self.device)
-            time.sleep(5)
+            time.sleep(6)
+            self.master.toggleAirPlane(self.device)
+            while True and loop == True:
+                if self.master.isAirPlane(self.device):
+                    break
+            self.master.toggleAirPlane(self.device)
+                
 
 class App(tk.Tk):
     def __init__(self):
