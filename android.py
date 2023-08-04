@@ -53,16 +53,15 @@ class ADBMaster():
                     device.shell("input keyevent 20")
                     device.shell("input keyevent 23")
                     device.shell("input keyevent 4")
-    
+
     def browse(self, link, targetDevice: Device = None):
         if targetDevice is not None:
-            targetDevice.shell(f"am start -n com.android.chrome/org.chromium.chrome.browser.incognito.IncognitoTabLauncher \ -a android.intent.action.VIEW -d '{link}'")
+            targetDevice.shell(f"am start -n com.android.chrome/com.google.android.apps.chrome.Main -d '{link}'")
         else:
             devices = self.client.devices()
             if len(devices) > 0:
                 for device in devices:
-                    device.shell(f"am start -n com.android.chrome/org.chromium.chrome.browser.incognito.IncognitoTabLauncher")
-                    device.shell(f"am start -a android.intent.action.VIEW -d '{link}'")
+                    device.shell(f"am start -n com.android.chrome/com.google.android.apps.chrome.Main -d '{link}'")
     
     def shellcmd(self, cmd, targetDevice : Device = None):
         if targetDevice is not None:
