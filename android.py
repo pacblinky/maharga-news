@@ -71,8 +71,3 @@ class ADBMaster():
             if len(devices) > 0:
                 for device in devices:
                         device.shell(cmd)
-
-master = ADBMaster()
-master.start()
-master.printConnected()
-master.browse("https://3d-sof2.com")
