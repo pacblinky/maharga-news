@@ -1,2 +1,2 @@
-adb.exe start-server
+adb.exe usb
 pause
